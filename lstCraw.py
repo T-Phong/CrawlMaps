@@ -8,19 +8,20 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# Setup Chrome
-options = Options()
-# --- 1. CẤU HÌNH ---
-search_query = "Nhà hàng đường Nguyễn Huệ, Quận 1" # Từ khóa tìm kiếm
 
-options = Options()
-# options.add_argument('headless') # Tắt headless để xem trình duyệt chạy và tránh bị chặn
-options.add_argument("--lang=vi")  # Giả lập tiếng Việt
 
-browser = webdriver.Chrome(options=options)
-wait = WebDriverWait(browser, 10)
+def scrape_list(search_query):
+    # Setup Chrome
+    options = Options()
+    # --- 1. CẤU HÌNH ---
+    #search_query = "Nhà hàng đường Quang Trung, Quận Gò Vấp" # Từ khóa tìm kiếm
 
-def scrape_list():
+    options = Options()
+    # options.add_argument('headless') # Tắt headless để xem trình duyệt chạy và tránh bị chặn
+    options.add_argument("--lang=vi")  # Giả lập tiếng Việt
+
+    browser = webdriver.Chrome(options=options)
+    wait = WebDriverWait(browser, 10)
     try:
         browser.get("https://www.google.com/maps")
         
@@ -92,10 +93,10 @@ def scrape_list():
                 if number_rating <= 4.5 and number_of_reviews >= 50:
                     # Lưu vào danh sách
                     data = {
-                        "Tên": name,
+                        "Ten": name,
                         "Đánh giá": rating,
-                        "Link Google Map": link,
-                        "Số đánh giá": number_of_reviews
+                        "link": link,
+                        "num_of_reviews": number_of_reviews
                     }
                     results.append(data)
                     print(f"Đã lấy: {name} ({rating})")
@@ -105,12 +106,13 @@ def scrape_list():
                 print("Bỏ qua 1 địa điểm lỗi:", e)
 
         # --- 5. XUẤT RA CSV ---
-        keys = results[0].keys()
-        with open('danh_sach_nha_hang.csv', 'w', newline='', encoding='utf-8-sig') as output_file:
-            dict_writer = csv.DictWriter(output_file, fieldnames=keys)
-            dict_writer.writeheader()
-            dict_writer.writerows(results)
-            print("\nĐã lưu file danh_sach_nha_hang.csv thành công!")
+        # keys = results[0].keys()
+        # with open('danh_sach_nha_hang.csv', 'w', newline='', encoding='utf-8-sig') as output_file:
+        #     dict_writer = csv.DictWriter(output_file, fieldnames=keys)
+        #     dict_writer.writeheader()
+        #     dict_writer.writerows(results)
+        #     print("\nĐã lưu file danh_sach_nha_hang.csv thành công!")
+        return results
 
     except Exception as e:
         print("Lỗi chương trình:", e)
